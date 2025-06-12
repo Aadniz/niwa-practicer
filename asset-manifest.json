@@ -1,0 +1,30 @@
+{
+  "files": {
+    "main.css": "/static/css/main.6a20139e.css",
+    "main.js": "/static/js/main.68bedc51.js",
+    "static/js/453.bfe2768c.chunk.js": "/static/js/453.bfe2768c.chunk.js",
+    "static/media/upperNixies.png": "/static/media/upperNixies.ee0bab372e5319c28d28.png",
+    "static/media/outerRing.png": "/static/media/outerRing.e33b3ac4ff8b22968aac.png",
+    "static/media/lowerNixies.png": "/static/media/lowerNixies.28fb09eff6cb4c05fcd1.png",
+    "static/media/innerRing.png": "/static/media/innerRing.4f85a5ebae908aed313c.png",
+    "static/media/rightComponentUpper.png": "/static/media/rightComponentUpper.30e3368b8c4fefaa8e25.png",
+    "static/media/base.png": "/static/media/base.9ef22f9ace502a99051a.png",
+    "static/media/rightComponentLower.png": "/static/media/rightComponentLower.b4def760e23b22e3941e.png",
+    "static/media/sideComponents.png": "/static/media/sideComponents.9a2a47b133d4f7a4c0bb.png",
+    "static/media/seperators.png": "/static/media/seperators.d67a6fc36299de312e64.png",
+    "static/media/text.png": "/static/media/text.301ebed2bcb434720189.png",
+    "static/media/rightComponentGlass.png": "/static/media/rightComponentGlass.0deb57afd833789cebda.png",
+    "static/media/upperWires.png": "/static/media/upperWires.b216957a039c04584508.png",
+    "static/media/upperComponent.png": "/static/media/upperComponent.1dce5f168863a756b1a4.png",
+    "static/media/ics.png": "/static/media/ics.b2ef9dcb18fed651fdbd.png",
+    "static/media/solderPads.png": "/static/media/solderPads.ebc4a5c53c60052cd71b.png",
+    "index.html": "/index.html",
+    "main.6a20139e.css.map": "/static/css/main.6a20139e.css.map",
+    "main.68bedc51.js.map": "/static/js/main.68bedc51.js.map",
+    "453.bfe2768c.chunk.js.map": "/static/js/453.bfe2768c.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.6a20139e.css",
+    "static/js/main.68bedc51.js"
+  ]
+}
