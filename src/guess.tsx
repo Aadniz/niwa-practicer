@@ -4,7 +4,7 @@ export const Guess = () => {
     return (
         <div style={wrapperStyle}>
             <div>Make your guess</div>
-            <input style={style}/>
+            <input/>
         </div>
     )
 }
@@ -15,13 +15,4 @@ const wrapperStyle: CSSProperties = {
     minWidth: "30vh",
     marginLeft: "auto",
     marginRight: "auto"
-}
-
-const style: CSSProperties = {
-    padding: "1rem",
-    backgroundColor: "var(--darkest)",
-    border: "none",
-    outline: "none",
-    color: "var(--primary)",
-    width: "100%"
 }

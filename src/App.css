@@ -4,11 +4,12 @@
   --darkest: #1A191E;
   --primary: #F2C07C;
   --foreground: #FFFFFF;
+  --transition-duration: 0.3s;
 }
 
 .App {
   text-align: center;
-  background-color: #282c34;
+  background-color: var(--darker);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -17,11 +18,24 @@
   color: var(--foreground);
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+input {
+  padding: 1rem;
+  background-color: var(--darkest);
+  border: none;
+  outline: none;
+  color: var(--primary);
+  width: 100%;
+  transition-duration: var(--transition-duration);
 }
 
-.App-link {
-  color: #61dafb;
+button {
+  padding: 1rem;
+  background-color: var(--darkest);
+  border: none;
+  outline: none;
+  color: var(--primary);
+  transition-duration: var(--transition-duration);
+}
+button:hover {
+  background-c: rgba(var(--primary), 0.8);
 }

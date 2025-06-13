@@ -4,18 +4,58 @@ import { layers } from "./layers";
 // Constants
 const MAX_ROTATION = 60;
 const DEFAULT_PARALLAX_FACTOR = 0.5;
-const INITIAL_ANIMATION_DELAY = 2000;
+const INITIAL_ANIMATION_DELAY = 2;
 const MOUSE_SENSITIVITY = 90; // Lower = less sensitive
 const SCROLL_SENSITIVITY = 300;
 const Z_DEPTH_MULTIPLIER = 20;
-const TRANSITION_DURATION = "2s";
+const TRANSITION_DURATION = 0;
+// Initial off delay, Hours, off, minutes, off, seconds, off, seconds, off, seconds etc etc
+const TIMINGS = [1.5, 1.0, 0.4, 1.3, 0.8, 0.6, 0.4];
 
 export const Watch = () => {
+    const time = new Date();
+    const hours = time.getHours();
+    const minutes = time.getMinutes();
+
     const [rotation, setRotation] = useState({
         x: Math.random() * MAX_ROTATION,
         y: Math.random() * MAX_ROTATION,
         z: 0,
     });
+
+    const [[leftNum, rightNum, greenLight], setNums] = useState([-1, -1, false]);
+
+    useEffect(() => {
+        let timeouts: NodeJS.Timeout[] = [];
+        let accumulatedTime = INITIAL_ANIMATION_DELAY;
+
+        const [leftHours, rightHours] = hours.toString().padStart(2, "0").split("").map(h => parseInt(h));
+        const [leftMinutes, rightMinutes] = minutes.toString().padStart(2, "0").split("").map(h => parseInt(h));
+
+        // Sequence: initial delay, show hours, hide, show minutes, hide, etc.
+        for (let i = 0; i < TIMINGS.length; i++) {
+            accumulatedTime += TIMINGS[i];
+            const timeout = setTimeout(() => {
+                if (i % 2 === 0) {
+                    if (i === 0) {
+                        setNums([leftHours, rightHours, true]);
+                    } else if (i === 2) {
+                        setNums([leftMinutes, rightMinutes, true]);
+                    }
+                } else {
+                    setNums([-1, -1, true]);
+                }
+            }, accumulatedTime * 1000);
+
+            timeouts.push(timeout);
+        }
+
+        return () => {
+            timeouts.forEach(timeout => clearTimeout(timeout));
+        };
+    }, [hours, minutes]);
+
+
     const [parallaxFactor, setParallaxFactor] = useState(DEFAULT_PARALLAX_FACTOR);
     const animationFrameRef = useRef<number>(0);
     const lastMousePosition = useRef({ x: 0, y: 0 });
@@ -53,7 +93,7 @@ export const Watch = () => {
 
             window.addEventListener("mousemove", handleMouseMove);
             window.addEventListener("wheel", handleWheel, { passive: false });
-        }, INITIAL_ANIMATION_DELAY);
+        }, INITIAL_ANIMATION_DELAY * 1000);
 
         return () => {
             clearTimeout(timer);
@@ -75,7 +115,31 @@ export const Watch = () => {
                     const translateX = Math.sin(radY) * l.depth * parallaxFactor * 100;
                     const translateY = -Math.sin(radX) * l.depth * parallaxFactor * 100;
 
-                    const style: CSSProperties = {
+                    let opacity = "1";
+                    if (l.id !== undefined) {
+                        // Green light
+                        if (l.id === 16) {
+                            if (!greenLight && idx === 1) {
+                                opacity = "0";
+                            } else if (greenLight && idx === 0) {
+                                opacity = "0";
+                            }
+                        }
+                        // Left lights
+                        else if (5 >= l.id) {
+                            if (leftNum !== l.id) {
+                                opacity = "0";
+                            }
+                        }
+                        // Right lights
+                        else {
+                            if (rightNum !== l.id - 6) {
+                                opacity = "0";
+                            }
+                        }
+                    }
+
+                    let style: CSSProperties = {
                         ...layerStyle,
                         zIndex,
                         backgroundImage: `url('${i}')`,
@@ -86,7 +150,8 @@ export const Watch = () => {
                             translateY(${translateY}px)
                             translateZ(${l.depth * Z_DEPTH_MULTIPLIER}px)
                         `,
-                        transition: `transform ${TRANSITION_DURATION} ease-out`,
+                        transition: `transform ${TRANSITION_DURATION}s ease-out`,
+                        opacity: opacity
                     };
 
                     return (
