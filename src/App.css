@@ -1,41 +1,35 @@
 :root {
-  --dark: #8A90A6;
-  --darker: #2C2B31;
-  --darkest: #1A191E;
-  --primary: #F2C07C;
-  --foreground: #FFFFFF;
   --transition-duration: 0.3s;
 }
 
 .App {
   text-align: center;
-  background-color: var(--darker);
+  /*background-color: var(--darker);*/
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: calc(10px + 2vmin);
-  color: var(--foreground);
+  /*color: var(--foreground);*/
 }
 
 input {
   padding: 1rem;
-  background-color: var(--darkest);
+  /*background-color: var(--darkest);*/
   border: none;
   outline: none;
-  color: var(--primary);
+  /*color: var(--primary);*/
   width: 100%;
   transition-duration: var(--transition-duration);
 }
 
 button {
-  padding: 1rem;
-  background-color: var(--darkest);
+  padding: 0.5rem;
+  /*background-color: var(--darkest);*/
   border: none;
   outline: none;
-  color: var(--primary);
+  /*color: var(--primary);*/
   transition-duration: var(--transition-duration);
 }
 button:hover {
-  background-c: rgba(var(--primary), 0.8);
+  /*background-c: rgba(var(--primary), 0.8);*/
 }

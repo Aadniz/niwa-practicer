@@ -1,5 +1,6 @@
 import { CSSProperties, useEffect, useRef, useState, useCallback } from "react";
 import { layers } from "./layers";
+import {ISettings} from "../settings";
 
 // Constants
 const MAX_ROTATION = 60;
@@ -8,26 +9,34 @@ const INITIAL_ANIMATION_DELAY = 2;
 const MOUSE_SENSITIVITY = 90; // Lower = less sensitive
 const SCROLL_SENSITIVITY = 300;
 const Z_DEPTH_MULTIPLIER = 20;
-const TRANSITION_DURATION = 0;
+const TRANSITION_DURATION = 2;
 // Initial off delay, Hours, off, minutes, off, seconds, off, seconds, off, seconds etc etc
 const TIMINGS = [1.5, 1.0, 0.4, 1.3, 0.8, 0.6, 0.4];
 
-export const Watch = () => {
-    const time = new Date();
+export const Watch = ({settings}: {settings: ISettings}) => {
+    const time = settings.mode === "live" ? new Date() : settings.randomTime;
     const hours = time.getHours();
     const minutes = time.getMinutes();
 
-    const [rotation, setRotation] = useState({
-        x: Math.random() * MAX_ROTATION,
-        y: Math.random() * MAX_ROTATION,
-        z: 0,
-    });
+    const initialRotation = settings.randomStart
+        ? {
+            x: Math.random() * MAX_ROTATION,
+            y: Math.random() * MAX_ROTATION,
+            z: 0,
+        }
+        : {
+            x: 0,
+            y: 20,
+            z: 0
+        };
+
+    const [rotation, setRotation] = useState(initialRotation);
 
     const [[leftNum, rightNum, greenLight], setNums] = useState([-1, -1, false]);
 
     useEffect(() => {
         let timeouts: NodeJS.Timeout[] = [];
-        let accumulatedTime = INITIAL_ANIMATION_DELAY;
+        let accumulatedTime = settings.initialDelay ? INITIAL_ANIMATION_DELAY : 0;
 
         const [leftHours, rightHours] = hours.toString().padStart(2, "0").split("").map(h => parseInt(h));
         const [leftMinutes, rightMinutes] = minutes.toString().padStart(2, "0").split("").map(h => parseInt(h));
@@ -53,7 +62,7 @@ export const Watch = () => {
         return () => {
             timeouts.forEach(timeout => clearTimeout(timeout));
         };
-    }, [hours, minutes]);
+    }, [hours, minutes, settings.initialDelay]);
 
 
     const [parallaxFactor, setParallaxFactor] = useState(DEFAULT_PARALLAX_FACTOR);
@@ -62,6 +71,8 @@ export const Watch = () => {
 
     // Smoothly handle mouse movement with requestAnimationFrame
     const handleMouseMove = useCallback((e: MouseEvent) => {
+        if (!settings.mouseFollow)
+            return;
         lastMousePosition.current = {
             x: -(e.clientY / window.innerHeight - 0.5) * MOUSE_SENSITIVITY,
             y: (e.clientX / window.innerWidth - 0.5) * MOUSE_SENSITIVITY
@@ -77,7 +88,7 @@ export const Watch = () => {
                 animationFrameRef.current = 0;
             });
         }
-    }, []);
+    }, [settings.mouseFollow]);
 
     const handleWheel = useCallback((e: WheelEvent) => {
         e.preventDefault();
@@ -93,7 +104,7 @@ export const Watch = () => {
 
             window.addEventListener("mousemove", handleMouseMove);
             window.addEventListener("wheel", handleWheel, { passive: false });
-        }, INITIAL_ANIMATION_DELAY * 1000);
+        }, settings.initialDelay ? INITIAL_ANIMATION_DELAY * 1000 : 10);
 
         return () => {
             clearTimeout(timer);
@@ -103,7 +114,7 @@ export const Watch = () => {
                 cancelAnimationFrame(animationFrameRef.current);
             }
         };
-    }, [handleMouseMove, handleWheel]);
+    }, [handleMouseMove, handleWheel, settings.initialDelay]);
 
     return (
         <div style={wrapperStyle}>

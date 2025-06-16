@@ -1,6 +1,7 @@
-import {CSSProperties, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
+import {ISettings} from "./settings";
 
-export const LiveTime = ({twentyFour}: {twentyFour: boolean}) => {
+export const LiveTime = ({settings}: {settings: ISettings}) => {
 
     const [time, setTime] = useState(Date.now());
 
@@ -16,13 +17,15 @@ export const LiveTime = ({twentyFour}: {twentyFour: boolean}) => {
     const hours = date.getHours();
     const minutes = date.getMinutes();
     const seconds = date.getSeconds();
-    if (twentyFour) {
+    if (settings.twentyFour) {
         timeString += hours.toString().padStart(2, "0") + ":" + minutes.toString().padStart(2, "0") + ":" + seconds.toString().padStart(2, "0");
     } else {
         if (hours === 0) {
             timeString += `12`;
+        } else if (hours > 12) {
+            timeString += (hours - 12).toString()
         } else {
-            timeString += hours.toString().padStart(2, "0");
+            timeString += hours.toString()
         }
         timeString += ":" + minutes.toString().padStart(2, "0") + ":" + seconds.toString().padStart(2, "0");
         if (12 > hours) {
@@ -34,17 +37,8 @@ export const LiveTime = ({twentyFour}: {twentyFour: boolean}) => {
 
     return (
         <div style={{display: "grid"}}>
-            <div style={timeStyle}>{timeString}</div>
-            <div style={dateStyle}>{date.toDateString()}</div>
+            <div className="text-primary text-3xl">{timeString}</div>
+            <div className="text-dark">{date.toDateString()}</div>
         </div>
     )
-}
-
-const timeStyle: CSSProperties = {
-    color: "var(--primary)"
-}
-
-const dateStyle: CSSProperties = {
-    color: "var(--dark)",
-    fontSize: "calc(8px + 1vmin)"
 }

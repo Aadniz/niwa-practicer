@@ -2,32 +2,29 @@ import React, {useState} from 'react';
 import './App.css';
 import {Watch} from "./watch/watch";
 import {Guess} from "./guess";
-import {Settings} from "./settings";
+import {ISettings, Settings} from "./settings";
 import {LiveTime} from "./live";
 
 function App() {
 
-    // In your Watch component:
-    const [settings, setSettings] = useState({
+    // Initial settings
+    const [settings, setSettings] = useState<ISettings>({
         mode: "live",
         twentyFour: true,
         mouseFollow: true,
         initialDelay: true,
         randomStart: true,
-        smoothing: 2
+        smoothing: 2,
+        randomTime: new Date(Math.random() * Date.now())
     });
 
   return (
-    <div className="App">
-        <Settings
-            onModeChange={(mode) => setSettings(prev => ({...prev, mode}))}
-            onMouseFollowChange={(enabled) => setSettings(prev => ({...prev, mouseFollow: enabled}))}
-            onInitialDelayChange={(enabled) => setSettings(prev => ({...prev, initialDelay: enabled}))}
-            onRandomStartChange={(enabled) => setSettings(prev => ({...prev, randomStart: enabled}))}
-            onSmoothingChange={(value) => setSettings(prev => ({...prev, smoothing: value}))}
-        />
-        <Watch/>
-        { settings.mode === "guessing" ? <Guess/> : <LiveTime twentyFour={settings.twentyFour}/> }
+    <div className="App bg-darker text-foreground">
+        <Settings settings={settings} onSettingsChange={setSettings}/>
+        <Watch settings={settings}/>
+        { settings.mode === "guess"
+            ? <Guess settings={settings}/>
+            : <LiveTime settings={settings}/> }
     </div>
   );
 }
