@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/niwa-practicer/static/css/main.aa0d2ce3.css",
-    "main.js": "/niwa-practicer/static/js/main.d3d72e45.js",
+    "main.css": "/niwa-practicer/static/css/main.2435eb6c.css",
+    "main.js": "/niwa-practicer/static/js/main.f694de93.js",
     "static/js/453.bfe2768c.chunk.js": "/niwa-practicer/static/js/453.bfe2768c.chunk.js",
     "static/media/rightComponentUpperOn.png": "/niwa-practicer/static/media/rightComponentUpperOn.76c3c4070154e0558c89.png",
     "static/media/upperNixies.png": "/niwa-practicer/static/media/upperNixies.87411762dd938fced2b3.png",
@@ -37,12 +37,12 @@
     "static/media/ics.png": "/niwa-practicer/static/media/ics.b2ef9dcb18fed651fdbd.png",
     "static/media/solderPads.png": "/niwa-practicer/static/media/solderPads.ebc4a5c53c60052cd71b.png",
     "index.html": "/niwa-practicer/index.html",
-    "main.aa0d2ce3.css.map": "/niwa-practicer/static/css/main.aa0d2ce3.css.map",
-    "main.d3d72e45.js.map": "/niwa-practicer/static/js/main.d3d72e45.js.map",
+    "main.2435eb6c.css.map": "/niwa-practicer/static/css/main.2435eb6c.css.map",
+    "main.f694de93.js.map": "/niwa-practicer/static/js/main.f694de93.js.map",
     "453.bfe2768c.chunk.js.map": "/niwa-practicer/static/js/453.bfe2768c.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.aa0d2ce3.css",
-    "static/js/main.d3d72e45.js"
+    "static/css/main.2435eb6c.css",
+    "static/js/main.f694de93.js"
   ]
 }
