@@ -8,7 +8,7 @@ export interface ISettings {
     initialDelay: boolean,
     randomStart: boolean,
     smoothing: number,
-    randomTime: Date
+    timings: [number, number, number, number, number, number, number]
 }
 
 export const Settings = ({settings, onSettingsChange}: {settings: ISettings, onSettingsChange: (value: ISettings) => void}) => {

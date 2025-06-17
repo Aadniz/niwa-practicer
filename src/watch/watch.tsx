@@ -2,6 +2,11 @@ import { CSSProperties, useEffect, useRef, useState, useCallback } from "react";
 import { layers } from "./layers";
 import {ISettings} from "../settings";
 
+interface WatchProps {
+    settings: ISettings,
+    time?: Date
+}
+
 // Constants
 const MAX_ROTATION = 60;
 const DEFAULT_PARALLAX_FACTOR = 0.5;
@@ -10,13 +15,11 @@ const MOUSE_SENSITIVITY = 90; // Lower = less sensitive
 const SCROLL_SENSITIVITY = 300;
 const Z_DEPTH_MULTIPLIER = 20;
 const TRANSITION_DURATION = 2;
-// Initial off delay, Hours, off, minutes, off, seconds, off, seconds, off, seconds etc etc
-const TIMINGS = [1.5, 1.0, 0.4, 1.3, 0.8, 0.6, 0.4];
 
-export const Watch = ({settings}: {settings: ISettings}) => {
-    const time = settings.mode === "live" ? new Date() : settings.randomTime;
-    const hours = time.getHours();
-    const minutes = time.getMinutes();
+export const Watch = ({settings, time}: WatchProps) => {
+    const watchTime = settings.mode === "live" || time === undefined ? new Date() : time;
+    const hours = watchTime.getHours();
+    const minutes = watchTime.getMinutes();
 
     const initialRotation = settings.randomStart
         ? {
@@ -42,8 +45,8 @@ export const Watch = ({settings}: {settings: ISettings}) => {
         const [leftMinutes, rightMinutes] = minutes.toString().padStart(2, "0").split("").map(h => parseInt(h));
 
         // Sequence: initial delay, show hours, hide, show minutes, hide, etc.
-        for (let i = 0; i < TIMINGS.length; i++) {
-            accumulatedTime += TIMINGS[i];
+        for (let i = 0; i < settings.timings.length; i++) {
+            accumulatedTime += settings.timings[i];
             const timeout = setTimeout(() => {
                 if (i % 2 === 0) {
                     if (i === 0) {
@@ -62,7 +65,7 @@ export const Watch = ({settings}: {settings: ISettings}) => {
         return () => {
             timeouts.forEach(timeout => clearTimeout(timeout));
         };
-    }, [hours, minutes, settings.initialDelay]);
+    }, [hours, minutes, settings.initialDelay, settings.timings]);
 
 
     const [parallaxFactor, setParallaxFactor] = useState(DEFAULT_PARALLAX_FACTOR);
