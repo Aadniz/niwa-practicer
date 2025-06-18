@@ -1,5 +1,5 @@
 import { ISettings } from "./settings";
-import { InputEvent, useState, useCallback } from "react";
+import {InputEvent, useState, useCallback, useRef} from "react";
 
 interface GuessProps {
     settings: ISettings;
@@ -10,6 +10,7 @@ interface GuessProps {
 }
 
 export const Guess = ({ settings, score, onScoreChange, randomTime, onRandomTimeChange }: GuessProps) => {
+    const guesses = useRef<Set<String>>(new Set<string>());
     const [value, setValue] = useState("");
     const [validated, setValidated] = useState<boolean | null>(null);
     const [correct, setCorrect] = useState<boolean | null>(null);
@@ -81,14 +82,18 @@ export const Guess = ({ settings, score, onScoreChange, randomTime, onRandomTime
         if (isValidTime) {
             const isCorrect = checkCorrectGuess(formattedValue);
             setCorrect(isCorrect);
-            onScoreChange(score + (isCorrect ? 10 : -1));
+            if (!guesses.current.has(formattedValue)) {
+                onScoreChange(score + (isCorrect ? 10 : -1));
+                guesses.current.add(formattedValue);
+            }
             if (isCorrect) {
                 setTimeout(() => {
                     setValue("");
                     setCorrect(null);
                     setValidated(null);
                     onRandomTimeChange(new Date(Math.random() * Date.now()))
-                }, settings.timings[0] * 1000)
+                }, settings.timings[0] * 1000);
+                guesses.current.clear();
             }
         } else {
             setCorrect(false);
