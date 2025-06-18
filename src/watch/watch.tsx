@@ -15,6 +15,7 @@ const MOUSE_SENSITIVITY = 90; // Lower = less sensitive
 const SCROLL_SENSITIVITY = 300;
 const Z_DEPTH_MULTIPLIER = 20;
 const TRANSITION_DURATION = 2;
+const SHOW_CLOCK_CYCLE_SECONDS = 29;
 
 export const Watch = ({settings, time}: WatchProps) => {
     const watchTime = settings.mode === "live" || time === undefined ? new Date() : time;
@@ -45,14 +46,30 @@ export const Watch = ({settings, time}: WatchProps) => {
         const [leftMinutes, rightMinutes] = minutes.toString().padStart(2, "0").split("").map(h => parseInt(h));
 
         // Sequence: initial delay, show hours, hide, show minutes, hide, etc.
-        for (let i = 0; i < settings.timings.length; i++) {
-            accumulatedTime += settings.timings[i];
-            const timeout = setTimeout(() => {
+        for (let i = 0; i < SHOW_CLOCK_CYCLE_SECONDS * 2; i++) {
+            if (settings.timings.length > i) {
+                accumulatedTime += settings.timings[i];
+            } else {  // The seconds
+                const percentCycled = i / (SHOW_CLOCK_CYCLE_SECONDS * 2);
                 if (i % 2 === 0) {
+                    const initialTiming = settings.timings[settings.timings.length - 1];
+                    accumulatedTime += initialTiming + percentCycled * (1 - initialTiming);
+                } else {
+                    const initialTiming = settings.timings[settings.timings.length - 2];
+                    accumulatedTime += initialTiming * (1 - percentCycled);
+                }
+            }
+            const timeout = setTimeout(() => {
+                if (i >= SHOW_CLOCK_CYCLE_SECONDS * 2 - 1) {
+                    setNums([-1, -1, false]);
+                } else if (i % 2 === 0) {
                     if (i === 0) {
                         setNums([leftHours, rightHours, true]);
                     } else if (i === 2) {
                         setNums([leftMinutes, rightMinutes, true]);
+                    } else if (settings.mode === "live") {  // Show seconds
+                        const [leftSeconds, rightSeconds] = (new Date()).getSeconds().toString().padStart(2, "0").split("").map(s => parseInt(s));
+                        setNums([leftSeconds, rightSeconds, true]);
                     }
                 } else {
                     setNums([-1, -1, true]);
@@ -65,7 +82,7 @@ export const Watch = ({settings, time}: WatchProps) => {
         return () => {
             timeouts.forEach(timeout => clearTimeout(timeout));
         };
-    }, [hours, minutes, settings.initialDelay, settings.timings]);
+    }, [hours, minutes, settings.initialDelay, settings.mode, settings.timings]);
 
 
     const [parallaxFactor, setParallaxFactor] = useState(DEFAULT_PARALLAX_FACTOR);
@@ -185,6 +202,7 @@ export const Watch = ({settings, time}: WatchProps) => {
 const wrapperStyle: CSSProperties = {
     height: "70vh",
     width: "100%"
+    
 };
 
 const innerBorderStyle: CSSProperties = {
