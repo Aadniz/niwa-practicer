@@ -4,43 +4,46 @@ import {ISettings} from "../settings";
 
 interface WatchProps {
     settings: ISettings,
-    time?: Date
+    time?: Date,
+    score: number
 }
 
 // Constants
 const MAX_ROTATION = 60;
-const DEFAULT_PARALLAX_FACTOR = 0.5;
-const INITIAL_ANIMATION_DELAY = 2;
+const DEFAULT_PARALLAX_FACTOR = 1.5;
 const MOUSE_SENSITIVITY = 90; // Lower = less sensitive
 const SCROLL_SENSITIVITY = 300;
 const Z_DEPTH_MULTIPLIER = 20;
 const TRANSITION_DURATION = 2;
 const SHOW_CLOCK_CYCLE_SECONDS = 29;
 
-export const Watch = ({settings, time}: WatchProps) => {
+export const Watch = ({settings, time, score}: WatchProps) => {
+    const initialScore = useRef(score);
+    const inInitialAnimation = useRef(false);
     const watchTime = settings.mode === "live" || time === undefined ? new Date() : time;
     const hours = watchTime.getHours();
     const minutes = watchTime.getMinutes();
+    const [rotation, setRotation] = useState(settings.randomStart
+        ? randomRotation()
+        : showRotation());
 
-    const initialRotation = settings.randomStart
-        ? {
-            x: Math.random() * MAX_ROTATION,
-            y: Math.random() * MAX_ROTATION,
-            z: 0,
+    if (settings.initialDelay > 0 && initialScore.current !== score) {
+        if (score > initialScore.current) {
+            setRotation(settings.randomStart ? randomRotation() : fixedRotation());
+            inInitialAnimation.current = true;
+            setTimeout(() => {
+                setRotation(showRotation());
+                inInitialAnimation.current = false;
+            }, settings.initialDelay * 1000);
         }
-        : {
-            x: 0,
-            y: 20,
-            z: 0
-        };
-
-    const [rotation, setRotation] = useState(initialRotation);
+        initialScore.current = score;
+    }
 
     const [[leftNum, rightNum, greenLight], setNums] = useState([-1, -1, false]);
 
     useEffect(() => {
         let timeouts: NodeJS.Timeout[] = [];
-        let accumulatedTime = settings.initialDelay ? INITIAL_ANIMATION_DELAY : 0;
+        let accumulatedTime = settings.initialDelay;
 
         const [leftHours, rightHours] = hours.toString().padStart(2, "0").split("").map(h => parseInt(h));
         const [leftMinutes, rightMinutes] = minutes.toString().padStart(2, "0").split("").map(h => parseInt(h));
@@ -91,7 +94,7 @@ export const Watch = ({settings, time}: WatchProps) => {
 
     // Smoothly handle mouse movement with requestAnimationFrame
     const handleMouseMove = useCallback((e: MouseEvent) => {
-        if (!settings.mouseFollow)
+        if (!settings.mouseFollow || inInitialAnimation.current)
             return;
         lastMousePosition.current = {
             x: -(e.clientY / window.innerHeight - 0.5) * MOUSE_SENSITIVITY,
@@ -120,11 +123,11 @@ export const Watch = ({settings, time}: WatchProps) => {
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            setRotation({ x: 10, y: 0, z: 0 });
+            setRotation(showRotation());
 
             window.addEventListener("mousemove", handleMouseMove);
             window.addEventListener("wheel", handleWheel, { passive: false });
-        }, settings.initialDelay ? INITIAL_ANIMATION_DELAY * 1000 : 10);
+        }, settings.initialDelay > 0 ? settings.initialDelay * 1000 : 10);
 
         return () => {
             clearTimeout(timer);
@@ -198,6 +201,30 @@ export const Watch = ({settings, time}: WatchProps) => {
     );
 };
 
+const fixedRotation = () => {
+    return {
+        x: 30,
+        y: 0,
+        z: 0
+    }
+}
+
+const randomRotation = () => {
+    return {
+        x: Math.random() * MAX_ROTATION - MAX_ROTATION/2,
+        y: Math.random() * MAX_ROTATION - MAX_ROTATION/2,
+        z: 0,
+    }
+}
+
+const showRotation = () => {
+    return {
+        x: 10,
+        y: 0,
+        z: 0
+    }
+}
+
 // Styles
 const wrapperStyle: CSSProperties = {
     height: "70vh",
@@ -210,6 +237,7 @@ const innerBorderStyle: CSSProperties = {
     height: "calc(100% - 2rem * 2)",
     position: "relative",
     perspective: "2000px",
+    backfaceVisibility: "hidden",
     transformStyle: "preserve-3d",
 };
 

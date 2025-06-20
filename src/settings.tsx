@@ -5,8 +5,9 @@ export interface ISettings {
     mode: WatchMode,
     twentyFour: boolean,
     mouseFollow: boolean,
-    initialDelay: boolean,
+    initialDelay: number,
     randomStart: boolean,
+    startPosition: {x: number, y: number, z: number},
     smoothing: number,
     timings: [number, number, number, number, number, number, number]
 }
@@ -35,8 +36,8 @@ export const Settings = ({settings, onSettingsChange}: {settings: ISettings, onS
                     <label className="flex items-center gap-1">
                         <input
                             type="checkbox"
-                            checked={settings.initialDelay}
-                            onChange={() => handleChange({initialDelay: !settings.initialDelay})}
+                            checked={settings.initialDelay > 0}
+                            onChange={() => handleChange({initialDelay: settings.initialDelay > 0 ? 0 : 2})}
                             style={checkboxStyle}
                         />
                         <span>Initial animation</span>

@@ -18,6 +18,7 @@ module.exports = {
       "secondary": "#26D8C5",
       "foreground": "#FFFFFF",
       "red": "#f27c7c",
+      "danger": "#FF4444"
     },
     fontFamily: {
       sans: ['Graphik', 'sans-serif'],
@@ -30,6 +31,15 @@ module.exports = {
       },
       borderRadius: {
         '4xl': '2rem',
+      },
+      animation: {
+        fadeOut: "fadeOut 1s ease-out forwards"
+      },
+      keyframes: {
+        fadeOut: {
+          "0%": { opacity: "1", transform: "translate(0, 0)" },
+          "100%": { opacity: "0" }
+        }
       }
     }
   },
