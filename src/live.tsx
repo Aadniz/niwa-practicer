@@ -1,7 +1,9 @@
 import {useEffect, useState} from "react";
-import {ISettings} from "./settings";
+import {useSettingsStore} from "./store";
 
-export const LiveTime = ({settings}: {settings: ISettings}) => {
+export const LiveTime = () => {
+
+    const settings = useSettingsStore((state) => state);
 
     const [time, setTime] = useState(Date.now());
 

@@ -1,23 +1,9 @@
-import { CSSProperties, useState } from "react";
+import { CSSProperties } from "react";
+import {useSettingsStore} from "./store";
 
-type WatchMode = "live"|"guess";
-export interface ISettings {
-    mode: WatchMode,
-    twentyFour: boolean,
-    mouseFollow: boolean,
-    initialDelay: number,
-    randomStart: boolean,
-    startPosition: {x: number, y: number, z: number},
-    smoothing: number,
-    timings: [number, number, number, number, number, number, number]
-}
+export const Settings = () => {
 
-export const Settings = ({settings, onSettingsChange}: {settings: ISettings, onSettingsChange: (value: ISettings) => void}) => {
-    const handleChange = (newSettings: Partial<ISettings>) => {
-        onSettingsChange({ ...settings, ...newSettings });
-    };
-
-    const [mode, setMode] = useState<WatchMode>(settings.mode);
+    const settings = useSettingsStore((state) => state);
 
     return (
         <div className="absolute z-10 right-0 top-0">
@@ -27,7 +13,7 @@ export const Settings = ({settings, onSettingsChange}: {settings: ISettings, onS
                         <input
                             type="checkbox"
                             checked={settings.mouseFollow}
-                            onChange={() => handleChange({mouseFollow: !settings.mouseFollow})}
+                            onChange={() => settings.toggle("mouseFollow")}
                             style={checkboxStyle}
                         />
                         <span>Mouse follow</span>
@@ -37,7 +23,7 @@ export const Settings = ({settings, onSettingsChange}: {settings: ISettings, onS
                         <input
                             type="checkbox"
                             checked={settings.initialDelay > 0}
-                            onChange={() => handleChange({initialDelay: settings.initialDelay > 0 ? 0 : 2})}
+                            onChange={() => settings.setInitialDelay(settings.initialDelay > 0 ? 0 : 2)}
                             style={checkboxStyle}
                         />
                         <span>Initial animation</span>
@@ -47,7 +33,7 @@ export const Settings = ({settings, onSettingsChange}: {settings: ISettings, onS
                         <input
                             type="checkbox"
                             checked={settings.randomStart}
-                            onChange={() => handleChange({randomStart: !settings.randomStart})}
+                            onChange={() => settings.toggle("randomStart")}
                             style={checkboxStyle}
                         />
                         <span>Random start position</span>
@@ -57,7 +43,7 @@ export const Settings = ({settings, onSettingsChange}: {settings: ISettings, onS
                         <input
                             type="checkbox"
                             checked={settings.twentyFour}
-                            onChange={() => handleChange({twentyFour: !settings.twentyFour})}
+                            onChange={() => settings.toggle("twentyFour")}
                             style={checkboxStyle}
                         />
                         <span>24 hour clock</span>
@@ -77,12 +63,8 @@ export const Settings = ({settings, onSettingsChange}: {settings: ISettings, onS
                 </div>
                 <button
                     className="bg-darkest hover:bg-darkest/80 text-primary w-full rounded-2xl"
-                    onClick={() => {
-                        const mode: WatchMode = settings.mode === "live" ? "guess" : "live";
-                        setMode(mode);
-                        handleChange({mode: mode});
-                    }}
-                >{mode === "live" ? "Live Clock" : "Guessing"}</button>
+                    onClick={() => settings.toggleMode()}
+                >{settings.mode === "live" ? "Live Clock" : "Guessing"}</button>
             </div>
         </div>
     );

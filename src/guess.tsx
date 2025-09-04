@@ -1,19 +1,17 @@
-import { ISettings } from "./settings";
 import {InputEvent, useState, useCallback, useRef, useEffect} from "react";
+import {useRandomTimeStore, useScoreStore, useSettingsStore} from "./store";
 
-interface GuessProps {
-    settings: ISettings;
-    score: number;
-    onScoreChange: (value: number) => void;
-    randomTime: Date;
-    onRandomTimeChange: (value: Date) => void;
-}
-
+const MAX_MISTAKES = 3;
 const INITIAL_SCORE_MULTIPLIER = 10;
 const SCORE_FALLOFF_TIME = 5;  // seconds
 const MIN_MULTIPLIER = 1;
 
-export const Guess = ({ settings, score, onScoreChange, randomTime, onRandomTimeChange }: GuessProps) => {
+export const Guess = () => {
+
+    const settings = useSettingsStore((state) => state);
+    const score = useScoreStore((state) => state);
+    const randomTime = useRandomTimeStore((state) => state);
+
     const guesses = useRef<Set<String>>(new Set<string>());
     const [startTime, setStartTime] = useState(new Date());
     const [value, setValue] = useState("");
@@ -65,8 +63,8 @@ export const Guess = ({ settings, score, onScoreChange, randomTime, onRandomTime
         const minutes = parseInt(minutesStr, 10);
 
         return (
-            randomTime.getHours() === hours &&
-            randomTime.getMinutes() === minutes
+            randomTime.value.getHours() === hours &&
+            randomTime.value.getMinutes() === minutes
         );
     }, [randomTime]);
 
@@ -90,7 +88,7 @@ export const Guess = ({ settings, score, onScoreChange, randomTime, onRandomTime
             const isCorrect = checkCorrectGuess(formattedValue);
             setCorrect(isCorrect);
             if (!guesses.current.has(formattedValue)) {
-                onScoreChange(score + (isCorrect ? scoreMultiplier : -1));
+                score.setScore(score.value + (isCorrect ? scoreMultiplier : -1));
                 guesses.current.add(formattedValue);
             }
             if (isCorrect) {
@@ -98,7 +96,7 @@ export const Guess = ({ settings, score, onScoreChange, randomTime, onRandomTime
                     setValue("");
                     setCorrect(null);
                     setValidated(null);
-                    onRandomTimeChange(new Date(Math.random() * Date.now()))
+                    randomTime.randomize();
                 }, settings.timings[0] * 1000);
                 guesses.current.clear();
                 setStartTime(new Date());
@@ -106,7 +104,7 @@ export const Guess = ({ settings, score, onScoreChange, randomTime, onRandomTime
         } else {
             setCorrect(false);
         }
-    }, [validateTime, checkCorrectGuess, onScoreChange, score, scoreMultiplier, settings.timings, onRandomTimeChange]);
+    }, [validateTime, checkCorrectGuess, score, scoreMultiplier, settings.timings, randomTime]);
 
     useEffect(() => {
         // The initial delay is to not make it unfair, starting to count down before the whole time has been shown

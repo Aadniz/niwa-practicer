@@ -1,12 +1,7 @@
 import { CSSProperties, useEffect, useRef, useState, useCallback } from "react";
 import { layers } from "./layers";
-import {ISettings} from "../settings";
+import {useRandomTimeStore, useScoreStore, useSettingsStore} from "../store";
 
-interface WatchProps {
-    settings: ISettings,
-    time?: Date,
-    score: number
-}
 
 // Constants
 const MAX_ROTATION = 60;
@@ -17,7 +12,12 @@ const Z_DEPTH_MULTIPLIER = 20;
 const TRANSITION_DURATION = 2;
 const SHOW_CLOCK_CYCLE_SECONDS = 29;
 
-export const Watch = ({settings, time, score}: WatchProps) => {
+export const Watch = () => {
+
+    const score = useScoreStore(state => state.value);
+    const settings = useSettingsStore((state) => state);
+    const time = useRandomTimeStore((state) => state.value);
+
     const initialScore = useRef(score);
     const inInitialAnimation = useRef(false);
     const watchTime = settings.mode === "live" || time === undefined ? new Date() : time;

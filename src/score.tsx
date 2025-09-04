@@ -1,6 +1,10 @@
 import { useRef, useEffect, useState } from "react";
+import {useScoreStore} from "./store";
 
-export const Score = ({ score }: { score: number }) => {
+export const Score = () => {
+
+    const score = useScoreStore((state) => state.value);
+
     const lastScore = useRef(score);
     const [scoreColor, setScoreColor] = useState("text-dark");
     const [delta, setDelta] = useState<{ value: number; visible: boolean }>({ value: 0, visible: false });
