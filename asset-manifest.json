@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/niwa-practicer/static/css/main.1c1db9b5.css",
-    "main.js": "/niwa-practicer/static/js/main.175c8dc0.js",
+    "main.js": "/niwa-practicer/static/js/main.c7641fb5.js",
     "static/js/453.bfe2768c.chunk.js": "/niwa-practicer/static/js/453.bfe2768c.chunk.js",
     "static/media/rightComponentUpperOn.png": "/niwa-practicer/static/media/rightComponentUpperOn.76c3c4070154e0558c89.png",
     "static/media/upperNixies.png": "/niwa-practicer/static/media/upperNixies.87411762dd938fced2b3.png",
@@ -38,11 +38,11 @@
     "static/media/solderPads.png": "/niwa-practicer/static/media/solderPads.ebc4a5c53c60052cd71b.png",
     "index.html": "/niwa-practicer/index.html",
     "main.1c1db9b5.css.map": "/niwa-practicer/static/css/main.1c1db9b5.css.map",
-    "main.175c8dc0.js.map": "/niwa-practicer/static/js/main.175c8dc0.js.map",
+    "main.c7641fb5.js.map": "/niwa-practicer/static/js/main.c7641fb5.js.map",
     "453.bfe2768c.chunk.js.map": "/niwa-practicer/static/js/453.bfe2768c.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.1c1db9b5.css",
-    "static/js/main.175c8dc0.js"
+    "static/js/main.c7641fb5.js"
   ]
 }
